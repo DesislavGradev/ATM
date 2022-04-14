@@ -26,7 +26,7 @@ public class ATM {
                 System.out.println("Въведете парола:");
                 String currentPass = scanner.nextLine();
                 if (currentPass.equals(currentUser.getPassword())) {
-                    cardNumber =  operationsMenu(scanner, numberToUsers, currentUser);
+                    cardNumber = operationsMenu(scanner, numberToUsers, currentUser);
                     continue;
                 }
             } else {
@@ -48,67 +48,75 @@ public class ATM {
         String operation = scanner.nextLine();
         switch (operation) {
             case "1":
-                String sumToWithdraw = withdrawMenu(scanner, currentUser.getBalance());
-                while sumToWithdraw
-                double sum = 0;
-                switch (sumToWithdraw) {
-                    case "1":
-                        sum = 50;
-                        break;
-                    case "2":
-                        sum = 100;
-                        break;
-                    case "3":
-                        sum = 150;
-                        break;
-                    case "4":
-                        sum = 200;
-                        break;
-                    case "5":
-                        sum = 300;
-                        break;
-                    case "6":
-                        sum = 400;
-                        break;
-                    case "7":
-                        System.out.println("Въведете сума:");
-                        sum = Double.parseDouble(scanner.nextLine());
-                        break;
-                    case "8":
-                        System.out.println("Назад");
-                        //TODO
-                        break;
-                }
-                if (currentUser.getBalance() >= sum) {
-                    currentUser.setBalance(currentUser.getBalance() - sum);
-                    numberToUsers.put(currentUser.getCardNumber(), currentUser);
-                } else {
-                    System.out.println("Тегленето не може да бъде извършено !%nЖеланата сума надхвърля наличната !");
-                    withdrawMenu(scanner, currentUser.getBalance());
+                boolean isSuccessful = false;
+                while (!isSuccessful) {
+                    System.out.printf("Наличност в сметката: %.2fлв%n", currentUser.getBalance());
+                    System.out.println("Изберете сума за теглене:");
+                    System.out.println("(1) 50лв");
+                    System.out.println("(2) 100лв");
+                    System.out.println("(3) 150лв");
+                    System.out.println("(4) 200лв");
+                    System.out.println("(5) 300лв");
+                    System.out.println("(6) 400лв");
+                    System.out.println("(7) Друга сума");
+                    System.out.println("(8) Назад");
+                    String sumToWithdraw = scanner.nextLine();
+                    double sum = 0;
+                    switch (sumToWithdraw) {
+                        case "1":
+                            sum = 50;
+                            break;
+                        case "2":
+                            sum = 100;
+                            break;
+                        case "3":
+                            sum = 150;
+                            break;
+                        case "4":
+                            sum = 200;
+                            break;
+                        case "5":
+                            sum = 300;
+                            break;
+                        case "6":
+                            sum = 400;
+                            break;
+                        case "7":
+                            System.out.println("Въведете сума:");
+                            sum = Double.parseDouble(scanner.nextLine());
+                            //TODO Return command
+                            break;
+                        case "8":
+                            System.out.println("Назад");
+                            operationsMenu(scanner, numberToUsers, currentUser);
+                            break;
+                    }
+                    if (currentUser.getBalance() >= sum) {
+                        currentUser.setBalance(currentUser.getBalance() - sum);
+                        numberToUsers.put(currentUser.getCardNumber(), currentUser);
+                        isSuccessful = true;
+                    } else {
+                        System.out.println("Тегленето не може да бъде извършено !%nЖеланата сума надхвърля наличната !");
+                    }
                 }
                 break;
             case "2":
+                System.out.println("Въведете сума за внасяня:");
+                double sumToDeposit = Double.parseDouble(scanner.nextLine());
+                currentUser.setBalance(currentUser.getBalance() + sumToDeposit);
+                numberToUsers.put(currentUser.getCardNumber(), currentUser);
+                //TODO Return command
                 break;
             case "3":
+                System.out.printf("Налична сума в сметката: %.2f", currentUser.getBalance());
+                //TODO Return command
+                break;
+            case "4":
                 break;
             case "0":
                 return operation;
         }
         return "0";
-    }
-
-    static String withdrawMenu(Scanner scanner, double balance) {
-        System.out.printf("Наличност в сметката: %.2fлв%n", balance);
-        System.out.println("Изберете сума за теглене:");
-        System.out.println("(1) 50лв");
-        System.out.println("(2) 100лв");
-        System.out.println("(3) 150лв");
-        System.out.println("(4) 200лв");
-        System.out.println("(5) 300лв");
-        System.out.println("(6) 400лв");
-        System.out.println("(7) Друга сума");
-        return scanner.nextLine();
-
     }
 
     static class User {
