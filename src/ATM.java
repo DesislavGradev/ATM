@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -112,6 +113,10 @@ public class ATM {
                 //TODO Return command
                 break;
             case "4":
+                System.out.println("Смяна на парола.");
+                System.out.println("Въведете нова парола:");
+                String newPassword = scanner.nextLine();
+                currentUser.setPassword(newPassword);
                 break;
             case "0":
                 return operation;
@@ -150,6 +155,10 @@ public class ATM {
 
         void setBalance(double balance) {
             this.balance = balance;
+        }
+
+        void setPassword(String password) {
+            this.password = password;
         }
     }
 }
