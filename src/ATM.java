@@ -1,4 +1,3 @@
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -26,10 +25,35 @@ public class ATM {
             if (currentUser != null) {
                 System.out.println("Въведете парола:");
                 String currentPass = scanner.nextLine();
-                if (currentPass.equals(currentUser.getPassword())) {
-                    cardNumber = operationsMenu(scanner, numberToUsers, currentUser);
+                boolean isBlocked = true;
+                for (int i = 2; i > 0; i--) {
+                    if (currentPass.equals(currentUser.getPassword())) {
+                        isBlocked = false;
+                        System.out.printf("Здравейте, %s%n", currentUser.getName());
+                        cardNumber = operationsMenu(scanner, numberToUsers, currentUser);
+                    } else {
+                        String remaining = "";
+                        System.out.println("Грешна парола! Опитайте отново.");
+                        if (i == 2) {
+                            remaining = "оставащи опита";
+                        } else {
+                            remaining = "оставащ опит";
+                        }
+                        System.out.printf("(%d %s.)%n", i, remaining);
+                        currentPass = scanner.nextLine();
+                    }
+                }
+                if (isBlocked) {
+                    System.out.println("Грешна парола!");
+                    System.out.println("Картата Ви е блокирана. Свържете се със своята банка.");
+                    cardNumber = "0";
+                    continue;
+                } else {
                     continue;
                 }
+
+                //TODO Card blocking
+
             } else {
                 System.out.println("Вашата карта е невалидна!");
                 System.out.println("Моля, опитайте отново.");
@@ -39,7 +63,6 @@ public class ATM {
     }
 
     static String operationsMenu(Scanner scanner, Map<String, User> numberToUsers, User currentUser) {
-        System.out.printf("Здравейте, %s%n", currentUser.getName());
         System.out.println("Изберете операция:");
         System.out.println("(1) Теглене");
         System.out.println("(2) Внасяне");
@@ -97,13 +120,15 @@ public class ATM {
                         numberToUsers.put(currentUser.getCardNumber(), currentUser);
                         isSuccessful = true;
                     } else {
-                        System.out.println("Тегленето не може да бъде извършено !%nЖеланата сума надхвърля наличната !");
+                        System.out.println("Тегленето не може да бъде извършено !");
+                        System.out.println("Желаната сума надхвърля наличната !");
                     }
                 }
                 break;
             case "2":
                 System.out.println("Въведете сума за внасяня:");
                 double sumToDeposit = Double.parseDouble(scanner.nextLine());
+                //TODO Sum check
                 currentUser.setBalance(currentUser.getBalance() + sumToDeposit);
                 numberToUsers.put(currentUser.getCardNumber(), currentUser);
                 //TODO Return command
@@ -116,6 +141,8 @@ public class ATM {
                 System.out.println("Смяна на парола.");
                 System.out.println("Въведете нова парола:");
                 String newPassword = scanner.nextLine();
+                //TODO password check (only digits)
+                //TODO return command
                 currentUser.setPassword(newPassword);
                 break;
             case "0":
